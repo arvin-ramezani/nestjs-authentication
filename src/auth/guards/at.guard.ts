@@ -1,6 +1,8 @@
 import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../auth.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export class AtGuard extends AuthGuard('jwt') {
   constructor(private readonly reflector: Reflector) {

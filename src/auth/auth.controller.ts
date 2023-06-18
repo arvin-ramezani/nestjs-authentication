@@ -12,7 +12,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { GetCurrentUser, GetCurrentUserId, Public } from './decorators';
 
 @Controller('auth')
@@ -33,7 +32,6 @@ export class AuthController {
   }
 
   @Post('local/logout')
-  // @UseGuards(AtGuard)
   @HttpCode(HttpStatus.OK)
   logoutLocal(@GetCurrentUserId() userId: number) {
     return this.authService.logoutLocal(userId);
@@ -51,7 +49,7 @@ export class AuthController {
   }
 
   @Get('users/get')
-  getUsers() {
-    return this.authService.getUsers();
+  getUsers(@GetCurrentUserId() userId: number) {
+    return this.authService.getUsers(userId);
   }
 }

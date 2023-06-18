@@ -1,6 +1,10 @@
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from './../prisma/prisma.service';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthDto } from './dto';
 import * as bcrypt from 'bcryptjs';
 import { Tokens } from './types';
@@ -86,7 +90,16 @@ export class AuthService {
     return tokens;
   }
 
-  async getUsers(): Promise<User[]> {
+  async getUsers(userId: number): Promise<User[]> {
+    const currentUser = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!currentUser.hashedRt)
+      throw new UnauthorizedException('You are not authenticated');
+
     return this.prisma.user.findMany();
   }
 
